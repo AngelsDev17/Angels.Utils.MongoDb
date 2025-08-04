@@ -10,7 +10,7 @@ namespace Angels.Utils.MongoDb.Repositories;
 public abstract class CoreRepository<T>(
     ILogger<CoreRepository<T>> logger,
     ApplicationDbContext applicationDbContext,
-    bool isDomainList,
+    bool isDomainList = false,
     CollectionConfiguration? collectionConfiguration = null) where T : AuditableEntity
 {
     private readonly ILogger _logger = logger;
@@ -22,24 +22,24 @@ public abstract class CoreRepository<T>(
     protected readonly FilterDefinitionBuilder<T> _filterDefinitionBuilder = Builders<T>.Filter;
     protected readonly UpdateDefinitionBuilder<T> _updateDefinitionBuilder = Builders<T>.Update;
 
-    protected async Task<T> FindOneById(Guid id)
+    public async Task<T> FindOneById(Guid id)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Id, id);
         return await FindOne(filterDefinition: filterDefinition);
     }
-    protected async Task<T> FindOneByStatus(Status status = Status.Active)
+    public async Task<T> FindOneByStatus(Status status = Status.Active)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Status, status);
         return await FindOne(filterDefinition: filterDefinition);
     }
-    protected async Task<T> FindOneByIdAndStatus(Guid id, Status status = Status.Active)
+    public async Task<T> FindOneByIdAndStatus(Guid id, Status status = Status.Active)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Id, id) &
                                _filterDefinitionBuilder.Eq(item => item.Status, status);
 
         return await FindOne(filterDefinition: filterDefinition);
     }
-    protected async Task<T> FindFirstRecord()
+    public async Task<T> FindFirstRecord()
     {
         try
         {
@@ -59,7 +59,7 @@ public abstract class CoreRepository<T>(
             throw;
         }
     }
-    protected async Task<T> FindLastRecord()
+    public async Task<T> FindLastRecord()
     {
         try
         {
@@ -79,7 +79,7 @@ public abstract class CoreRepository<T>(
             throw;
         }
     }
-    protected async Task<T> FindOne(FilterDefinition<T> filterDefinition)
+    public async Task<T> FindOne(FilterDefinition<T> filterDefinition)
     {
         try
         {
@@ -96,17 +96,17 @@ public abstract class CoreRepository<T>(
         }
     }
 
-    protected async Task<IEnumerable<T>> FindMany()
+    public async Task<IEnumerable<T>> FindMany()
     {
         var filterDefinition = _filterDefinitionBuilder.Where(item => true);
         return await FindMany(filterDefinition: filterDefinition);
     }
-    protected async Task<IEnumerable<T>> FindManyByStatus(Status status = Status.Active)
+    public async Task<IEnumerable<T>> FindManyByStatus(Status status = Status.Active)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Status, status);
         return await FindMany(filterDefinition: filterDefinition);
     }
-    protected async Task<IEnumerable<T>> FindMany(FilterDefinition<T> filterDefinition)
+    public async Task<IEnumerable<T>> FindMany(FilterDefinition<T> filterDefinition)
     {
         try
         {
@@ -123,7 +123,7 @@ public abstract class CoreRepository<T>(
         }
     }
 
-    protected async Task<long> Count(FilterDefinition<T> filterDefinition)
+    public async Task<long> Count(FilterDefinition<T> filterDefinition)
     {
         try
         {
@@ -140,7 +140,7 @@ public abstract class CoreRepository<T>(
         }
     }
 
-    protected async Task<Guid> InsertOne(T entity)
+    public async Task<Guid> InsertOne(T entity)
     {
         Guid id;
 
@@ -161,7 +161,7 @@ public abstract class CoreRepository<T>(
 
         return id;
     }
-    protected async Task<IEnumerable<Guid>> InsertMany(IEnumerable<T> entities)
+    public async Task<IEnumerable<Guid>> InsertMany(IEnumerable<T> entities)
     {
         if (!entities.Any())
         {
@@ -199,7 +199,7 @@ public abstract class CoreRepository<T>(
         return ids;
     }
 
-    protected async Task UpdateStatusById(Guid id, Status newStatus)
+    public async Task UpdateStatusById(Guid id, Status newStatus)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Id, id);
         var updateDefinition = _updateDefinitionBuilder.Set(item => item.Status, newStatus);
@@ -208,7 +208,7 @@ public abstract class CoreRepository<T>(
             filterDefinition: filterDefinition,
             updateDefinition: updateDefinition);
     }
-    protected async Task UpdateStatusByCurrentStatus(Status currentStatus, Status newStatus)
+    public async Task UpdateStatusByCurrentStatus(Status currentStatus, Status newStatus)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Status, currentStatus);
         var updateDefinition = _updateDefinitionBuilder.Set(item => item.Status, newStatus);
@@ -217,7 +217,7 @@ public abstract class CoreRepository<T>(
             filterDefinition: filterDefinition,
             updateDefinition: updateDefinition);
     }
-    protected async Task UpdateStatusByIdAndCurrentStatus(Guid id, Status currentStatus, Status newStatus)
+    public async Task UpdateStatusByIdAndCurrentStatus(Guid id, Status currentStatus, Status newStatus)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Id, id) &
                                _filterDefinitionBuilder.Eq(item => item.Status, currentStatus);
@@ -228,7 +228,7 @@ public abstract class CoreRepository<T>(
             filterDefinition: filterDefinition,
             updateDefinition: updateDefinition);
     }
-    protected async Task UpdateOne(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition)
+    public async Task UpdateOne(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition)
     {
         var properties = typeof(T).GetProperties();
 
@@ -259,7 +259,7 @@ public abstract class CoreRepository<T>(
             throw;
         }
     }
-    protected async Task UpdateMany(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition)
+    public async Task UpdateMany(FilterDefinition<T> filterDefinition, UpdateDefinition<T> updateDefinition)
     {
         var properties = typeof(T).GetProperties();
 
@@ -291,17 +291,17 @@ public abstract class CoreRepository<T>(
         }
     }
 
-    protected async Task DeleteOne(Guid id)
+    public async Task DeleteOneById(Guid id)
     {
         var filterDefinition = _filterDefinitionBuilder.Eq(item => item.Id, id);
         await DeleteOne(filterDefinition: filterDefinition);
     }
-    protected async Task DeleteMany()
+    public async Task DeleteMany()
     {
         var filterDefinition = _filterDefinitionBuilder.Where(item => true);
         await DeleteMany(filterDefinition: filterDefinition);
     }
-    protected async Task DeleteOne(FilterDefinition<T> filterDefinition)
+    public async Task DeleteOne(FilterDefinition<T> filterDefinition)
     {
         try
         {
@@ -317,7 +317,7 @@ public abstract class CoreRepository<T>(
             throw;
         }
     }
-    protected async Task DeleteMany(FilterDefinition<T> filterDefinition)
+    public async Task DeleteMany(FilterDefinition<T> filterDefinition)
     {
         try
         {
@@ -353,6 +353,15 @@ public abstract class CoreRepository<T>(
                     else
                     {
                         id = (Guid)currentId;
+                    }
+                    break;
+
+                case nameof(AuditableEntity.Status):
+                    var currentStatus = property.GetValue(obj: entity);
+
+                    if (currentStatus is null)
+                    {
+                        property.SetValue(obj: entity, value: Status.Active);
                     }
                     break;
 

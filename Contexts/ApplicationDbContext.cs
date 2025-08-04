@@ -9,10 +9,12 @@ public class ApplicationDbContext(DatabaseConfiguration dbSettings)
         bool isDomainList = false,
         CollectionConfiguration? collectionConfiguration = null) where T : class
     {
-        var client =
-            new MongoClient(
+        var mongoClientSettings =
+            MongoClientSettings.FromConnectionString(
                 connectionString: collectionConfiguration?.ConnectionString ??
                                   dbSettings.GetConnectionString(isDomainList: isDomainList));
+
+        var client = new MongoClient(settings: mongoClientSettings);
 
         var database =
             client.GetDatabase(

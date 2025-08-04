@@ -2,7 +2,7 @@
 
 namespace Angels.Utils.MongoDb.Models.Common;
 
-public record DomainValue : AuditableEntity
+public class DomainValue : AuditableEntity
 {
     [BsonIgnoreIfNull, BsonIgnoreIfDefault]
     public string? ParentId { get; set; } = null;

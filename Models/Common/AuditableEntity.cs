@@ -2,7 +2,7 @@
 
 namespace Angels.Utils.MongoDb.Models.Common;
 
-public record AuditableEntity
+public abstract class AuditableEntity
 {
     public Guid? Id { get; set; } = null;
     public Status Status { get; set; }

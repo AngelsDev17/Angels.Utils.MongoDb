@@ -33,6 +33,6 @@ public abstract class BaseRepository<T>(
     public new Task UpdateStatusByCurrentStatus(Status currentStatus, Status newStatus) => base.UpdateStatusByCurrentStatus(currentStatus: currentStatus, newStatus: newStatus);
     public new Task UpdateStatusByIdAndCurrentStatus(Guid id, Status currentStatus, Status newStatus) => base.UpdateStatusByIdAndCurrentStatus(id: id, currentStatus: currentStatus, newStatus: newStatus);
 
-    public new Task DeleteOne(Guid id) => base.DeleteOne(id: id);
+    public new Task DeleteOneById(Guid id) => base.DeleteOneById(id: id);
     public new Task DeleteMany() => base.DeleteMany();
 }

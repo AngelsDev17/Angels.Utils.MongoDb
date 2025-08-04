@@ -1,6 +1,9 @@
 ﻿using Angels.Utils.MongoDb.Contexts;
 using Angels.Utils.MongoDb.Models.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Angels.Utils.MongoDb.ExtensionMethods;
 
@@ -10,6 +13,10 @@ public static class MongoDbExtensions
         this IServiceCollection serviceCollection,
         Action<DatabaseConfiguration>? dbSettings = null)
     {
+        // Serialización para Guid
+
+        BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
+
         // Database configuration
 
         if (dbSettings is null)
